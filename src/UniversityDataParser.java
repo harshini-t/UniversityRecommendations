@@ -17,6 +17,9 @@ public class UniversityDataParser {
     Map<String, String> universityTuition;
     Map<String, String> universitySubSchools;
     Map<String, String> universityFinAid;
+    Map<String, String> universityAddRate;
+
+    
 
     Map<String, ArrayList<String>> sizeToUniversity;
 
@@ -107,6 +110,38 @@ public class UniversityDataParser {
         }
         return universityFinAid;
     }
+    
+    // university - admission rate
+    public Map<String, String> getAdmissionRate() {
+        this.universityAddRate = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+            String name = entry.getKey();
+            String link = entry.getValue();
+            System.out.println(name);
+            try {
+                this.currentDoc = Jsoup.connect(link).get();
+            } catch (IOException e) {
+                System.out.println("Could not get the university :");
+            }
+            String info = this.currentDoc.select("table[class=table borderless]").text();
+            String[] infoSplit = info.split(" ");
+            ArrayList<String> arrayList = new ArrayList<String>();
+            for (String x : infoSplit) {
+                arrayList.add(x);
+            }
+            int index = arrayList.indexOf("Rate");
+            
+            String addRate = arrayList.get(index + 1);
+            if (addRate.contains("Not")) {
+                universityAddRate.put(name, "Not Available");
+            }
+            else {
+                universityAddRate.put(name, addRate);
+            }           
+        }
+        return universityAddRate;
+    }
+
 
     // university - tuition
     public Map<String, String> getTuition() {
