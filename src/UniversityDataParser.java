@@ -18,10 +18,8 @@ public class UniversityDataParser {
     Map<String, String> universitySubSchools;
     Map<String, String> universityFinAid;
     Map<String, String> universityAddRate;
-
+    Map<String, ArrayList<String>> publicPrivateUniversity;
     Map<String, ArrayList<String>> settingToUniversity;
-
-
     Map<String, ArrayList<String>> sizeToUniversity;
 
     public UniversityDataParser() {
@@ -111,7 +109,7 @@ public class UniversityDataParser {
         }
         return universityFinAid;
     }
-    
+
     // university - admission rate
     public Map<String, String> getAdmissionRate() {
         this.universityAddRate = new HashMap<String, String>();
@@ -131,18 +129,16 @@ public class UniversityDataParser {
                 arrayList.add(x);
             }
             int index = arrayList.indexOf("Rate");
-            
+
             String addRate = arrayList.get(index + 1);
             if (addRate.contains("Not")) {
                 universityAddRate.put(name, "Not Available");
-            }
-            else {
+            } else {
                 universityAddRate.put(name, addRate);
-            }           
+            }
         }
         return universityAddRate;
     }
-
 
     // university - tuition
     public Map<String, String> getTuition() {
@@ -166,8 +162,50 @@ public class UniversityDataParser {
         }
         return universityRank;
     }
-    
-    // university - campus setting
+
+    // university - campus type (public/private)
+    public Map<String, ArrayList<String>> getPublicPrivate() {
+        this.publicPrivateUniversity = new HashMap<String, ArrayList<String>>();
+        for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+            String name = entry.getKey();
+            String link = entry.getValue();
+            try {
+                this.currentDoc = Jsoup.connect(link).get();
+            } catch (IOException e) {
+                System.out.println("Could not get the university :");
+            }
+            String info = this.currentDoc.select("table[class=table borderless]").text();
+            String[] infoSplit = info.split(" ");
+            ArrayList<String> arrayList = new ArrayList<String>();
+            for (String x : infoSplit) {
+                arrayList.add(x);
+            }
+            int index = arrayList.indexOf("Type");
+            arrayList.remove(index);
+            int index2 = arrayList.indexOf("Type");
+            String campusType = arrayList.get(index2 + 1);
+            if (campusType.equals("Public")) {
+                if (publicPrivateUniversity.containsKey("Public")) {
+                    publicPrivateUniversity.get("Public").add(name);
+                } else {
+                    ArrayList<String> publicList = new ArrayList<String>();
+                    publicList.add(name);
+                    publicPrivateUniversity.put("Public", publicList);
+                }
+            } else {
+                if (publicPrivateUniversity.containsKey("Private")) {
+                    publicPrivateUniversity.get("Private").add(name);
+                } else {
+                    ArrayList<String> privateList = new ArrayList<String>();
+                    privateList.add(name);
+                    publicPrivateUniversity.put("Private", privateList);
+                }
+            }
+        }
+        return publicPrivateUniversity;
+    }
+
+    // university - campus setting (rural/urban/suburban)
     public Map<String, ArrayList<String>> getCampusSetting() {
         this.settingToUniversity = new HashMap<String, ArrayList<String>>();
         for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
@@ -185,8 +223,8 @@ public class UniversityDataParser {
                 arrayList.add(x);
             }
             int index = arrayList.indexOf("Setting");
-            
-            String campusSetting = arrayList.get(index + 1);            
+
+            String campusSetting = arrayList.get(index + 1);
             if (campusSetting.equals("Urban")) {
                 if (settingToUniversity.containsKey("Urban")) {
                     settingToUniversity.get("Urban").add(name);
@@ -195,8 +233,7 @@ public class UniversityDataParser {
                     urbanList.add(name);
                     settingToUniversity.put("Urban", urbanList);
                 }
-            }
-            else if (campusSetting.equals("Suburban")) {
+            } else if (campusSetting.equals("Suburban")) {
                 if (settingToUniversity.containsKey("Suburban")) {
                     settingToUniversity.get("Suburban").add(name);
                 } else {
@@ -213,7 +250,7 @@ public class UniversityDataParser {
                     settingToUniversity.put("Rural", ruralList);
                 }
             }
-                
+
         }
         return settingToUniversity;
     }
@@ -242,8 +279,7 @@ public class UniversityDataParser {
             if (!name.contains("Iowa State University of")) {
                 index = arrayList.indexOf("Enrollment");
                 index = index + 1;
-            }
-            else {
+            } else {
                 index = arrayList.indexOf("Control");
                 index = index - 4;
             }
@@ -264,8 +300,7 @@ public class UniversityDataParser {
                     smallList.add(name);
                     sizeToUniversity.put("small", smallList);
                 }
-            }
-            else if (enrollment <= 40000) {
+            } else if (enrollment <= 40000) {
                 if (sizeToUniversity.containsKey("medium")) {
                     sizeToUniversity.get("medium").add(name);
                 } else {

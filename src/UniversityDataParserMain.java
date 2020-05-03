@@ -11,6 +11,7 @@ public class UniversityDataParserMain {
         parser.getEnrollmentSizes();
         parser.getAdmissionRate();
         parser.getCampusSetting();
+        parser.getPublicPrivate();
 
     }
 
