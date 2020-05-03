@@ -10,6 +10,7 @@ public class UniversityDataParserMain {
         parser.getTuition();
         parser.getEnrollmentSizes();
         parser.getAdmissionRate();
+        parser.getCampusSetting();
 
     }
 
