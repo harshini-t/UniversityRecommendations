@@ -339,7 +339,7 @@ public class UniversityDataParser {
         return settingToUniversity;
     }
 
-    // university - size - NOT DONE
+    // university - size 
     // small - 20,000 lower
     // medium - 40,000 lower
     // large 40,000 higher
