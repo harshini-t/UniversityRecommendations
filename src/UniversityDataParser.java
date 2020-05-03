@@ -18,6 +18,7 @@ public class UniversityDataParser {
     Map<String, String> universitySubSchools;
     Map<String, String> universityFinAid;
     Map<String, String> universityAddRate;
+    Map<String, ArrayList<String>> universityLocation;
     Map<String, ArrayList<String>> publicPrivateUniversity;
     Map<String, ArrayList<String>> settingToUniversity;
     Map<String, ArrayList<String>> sizeToUniversity;
@@ -163,7 +164,56 @@ public class UniversityDataParser {
         return universityRank;
     }
 
-    // university - campus type (public/private)
+    // state - university
+    public Map<String, ArrayList<String>> getAddress() {
+        this.universityLocation = new HashMap<String, ArrayList<String>>();
+        for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+            String name = entry.getKey();
+            String link = entry.getValue();
+            try {
+                this.currentDoc = Jsoup.connect(link).get();
+            } catch (IOException e) {
+                System.out.println("Could not get the university :");
+            }
+            String info = this.currentDoc.select("table[class=table borderless]").text();
+            String[] infoSplit = info.split(" ");
+            ArrayList<String> arrayList = new ArrayList<String>();
+            for (String x : infoSplit) {
+                arrayList.add(x);
+            }
+
+            int index = arrayList.indexOf("United");
+            int index2 = arrayList.indexOf("Canada");
+            String fullCampusState = "";
+            if (index >= 0) {
+                String campusState = arrayList.get(index - 1); 
+                if (campusState.equals("Hampshire")|| campusState.equals("Jersey")|| 
+                        campusState.equals("York")|| campusState.equals("Mexico")||
+                        campusState.equals("Carolina")||campusState.equals("Dakota")||
+                        campusState.equals("Island")|| campusState.equals("Virginia")) {
+                    if (!arrayList.get(index - 2).equals("West") && campusState.equals("Virginia")) {
+                        fullCampusState = campusState;
+                    } else {
+                        fullCampusState = arrayList.get(index - 2) + " " + campusState;
+                    }
+                } else {
+                    fullCampusState = campusState;
+                }
+            } else {
+                fullCampusState = arrayList.get(index2 - 1);
+            }
+            if (universityLocation.containsKey(fullCampusState)) {
+                universityLocation.get(fullCampusState).add(name);
+            } else {
+                ArrayList<String> newStateList = new ArrayList<String>();
+                newStateList.add(name);
+                universityLocation.put(fullCampusState, newStateList);
+            }
+        }
+        return universityLocation;
+    }
+
+    // campus type (public/private) - university
     public Map<String, ArrayList<String>> getPublicPrivate() {
         this.publicPrivateUniversity = new HashMap<String, ArrayList<String>>();
         for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
@@ -205,7 +255,7 @@ public class UniversityDataParser {
         return publicPrivateUniversity;
     }
 
-    // university - campus setting (rural/urban/suburban)
+    // campus setting (rural/urban/suburban) - university
     public Map<String, ArrayList<String>> getCampusSetting() {
         this.settingToUniversity = new HashMap<String, ArrayList<String>>();
         for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {

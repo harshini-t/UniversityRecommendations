@@ -12,6 +12,7 @@ public class UniversityDataParserMain {
         parser.getAdmissionRate();
         parser.getCampusSetting();
         parser.getPublicPrivate();
+        parser.getAddress();
 
     }
 
