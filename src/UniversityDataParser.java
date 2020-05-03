@@ -18,6 +18,7 @@ public class UniversityDataParser {
     Map<String, String> universitySubSchools;
     Map<String, String> universityFinAid;
     Map<String, String> universityAddRate;
+    Map<String, ArrayList<String>> calendarUniversity;
     Map<String, ArrayList<String>> universityLocation;
     Map<String, ArrayList<String>> publicPrivateUniversity;
     Map<String, ArrayList<String>> settingToUniversity;
@@ -186,7 +187,7 @@ public class UniversityDataParser {
             int index2 = arrayList.indexOf("Canada");
             String fullCampusState = "";
             if (index >= 0) {
-                String campusState = arrayList.get(index - 1); 
+                String campusState = arrayList.get(index - 1);
                 if (campusState.equals("Hampshire")|| campusState.equals("Jersey")|| 
                         campusState.equals("York")|| campusState.equals("Mexico")||
                         campusState.equals("Carolina")||campusState.equals("Dakota")||
@@ -211,6 +212,39 @@ public class UniversityDataParser {
             }
         }
         return universityLocation;
+    }
+
+    // Academic Calendar(Semesters, Quarters, Trimesters, 4-1-4, Other) - university
+    public Map<String, ArrayList<String>> getAcademicSystem() {
+        this.calendarUniversity = new HashMap<String, ArrayList<String>>();
+        for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+            String name = entry.getKey();
+            String link = entry.getValue();
+            try {
+                this.currentDoc = Jsoup.connect(link).get();
+            } catch (IOException e) {
+                System.out.println("Could not get the university :");
+            }
+            String info = this.currentDoc.select("table[class=table borderless]").text();
+            String[] infoSplit = info.split(" ");
+            ArrayList<String> arrayList = new ArrayList<String>();
+            for (String x : infoSplit) {
+                arrayList.add(x);
+            }
+            int index = arrayList.indexOf("Calendar");
+            String campusCalendar = arrayList.get(index + 1);
+            if (campusCalendar.equals("Not")) {
+                campusCalendar = campusCalendar + " reported";
+            }
+            if (calendarUniversity.containsKey(campusCalendar)) {
+                calendarUniversity.get(campusCalendar).add(name);
+            } else {
+                ArrayList<String> newStateList = new ArrayList<String>();
+                newStateList.add(name);
+                calendarUniversity.put(campusCalendar, newStateList);
+            }
+        }
+        return calendarUniversity;
     }
 
     // campus type (public/private) - university

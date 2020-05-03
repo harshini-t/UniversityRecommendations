@@ -13,7 +13,6 @@ public class UniversityDataParserMain {
         parser.getCampusSetting();
         parser.getPublicPrivate();
         parser.getAddress();
-
+        parser.getAcademicSystem();
     }
-
 }
