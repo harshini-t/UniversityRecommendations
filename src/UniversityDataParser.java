@@ -16,8 +16,8 @@ public class UniversityDataParser {
     Map<String, String> universityRank;
     Map<String, String> universityTuition;
     Map<String, String> universitySubSchools;
-    Map<String, String> universityFinAid;
-    Map<String, String> universityAddRate;
+    Map<String, String> universityFinancialAid;
+    Map<String, String> universityAddmissionRate;
     Map<String, ArrayList<String>> calendarUniversity;
     Map<String, ArrayList<String>> universityLocation;
     Map<String, ArrayList<String>> publicPrivateUniversity;
@@ -86,7 +86,7 @@ public class UniversityDataParser {
 
     // university - financial aid
     public Map<String, String> getFinancialAid() {
-        this.universityFinAid = new HashMap<String, String>();
+        this.universityFinancialAid = new HashMap<String, String>();
         for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
             String name = entry.getKey();
             String link = entry.getValue();
@@ -104,17 +104,17 @@ public class UniversityDataParser {
             int index = arrayList.indexOf("Aids");
             String finAid = arrayList.get(index + 1);
             if (finAid.contains("Yes")) {
-                universityFinAid.put(name, finAid);
+                universityFinancialAid.put(name, finAid);
             } else {
-                universityFinAid.put(name, "Not Reported");
+                universityFinancialAid.put(name, "Not Reported");
             }
         }
-        return universityFinAid;
+        return universityFinancialAid;
     }
 
     // university - admission rate
     public Map<String, String> getAdmissionRate() {
-        this.universityAddRate = new HashMap<String, String>();
+        this.universityAddmissionRate = new HashMap<String, String>();
         for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
             String name = entry.getKey();
             String link = entry.getValue();
@@ -134,12 +134,12 @@ public class UniversityDataParser {
 
             String addRate = arrayList.get(index + 1);
             if (addRate.contains("Not")) {
-                universityAddRate.put(name, "Not Available");
+                universityAddmissionRate.put(name, "Not Available");
             } else {
-                universityAddRate.put(name, addRate);
+                universityAddmissionRate.put(name, addRate);
             }
         }
-        return universityAddRate;
+        return universityAddmissionRate;
     }
 
     // university - tuition
