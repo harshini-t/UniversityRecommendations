@@ -5,20 +5,26 @@ public class UniversityDataParserMain {
 
     public static void main(String[] args) {
     	 UniversityDataParser parser = new UniversityDataParser();
-         parser.getUniversityLinks();
-         Map<String, String> countryRank = parser.getCountryRank();
-         Map<String, String> schoolsInUni = parser.getSchoolsInUniversity();
-         //Map<String, String> financialAid = parser.getFinancialAid();
-         //Map<String, String> tuition = parser.getTuition();
-         //Map<String, ArrayList<String>> enrollmentSize = parser.getEnrollmentSizes();
-         //Map<String, String> admissionRate = parser.getAdmissionRate();
-         //Map<String, ArrayList<String>> campusSetting= parser.getCampusSetting();
-         //Map<String, ArrayList<String>> publicPrivate = parser.getPublicPrivate();
-         //Map<String, ArrayList<String>> address = parser.getAddress();
-         //Map<String, ArrayList<String>> academicSystem = parser.getAcademicSystem();
+         
 
-         System.out.println("country rank: " + countryRank);
-         System.out.println("schools in uni: " + schoolsInUni);
+         parser.getUniversityLinks();
+ 		 parser.getCountryRank();
+         parser.getSchoolsInUniversity();
+         parser.getFinancialAid();
+         parser.getTuition();
+         parser.getEnrollmentSizes();
+         parser.getAdmissionRate();
+         parser.getCampusSetting();
+         parser.getPublicPrivate();
+         parser.getAddress();
+         parser.getAcademicSystem();
+         
+         System.out.println("recommendations: " + parser.
+        		 getRecommendations("Small", "Rural", "Public", 
+        				 "Semesters", "New Jersey", "Size", "Public/Private", "Campus Setting", 
+        				 "Location", "Academic Calendar"));
+         //System.out.println("country rank: " + countryRank);
+         //System.out.println("schools in uni: " + schoolsInUni);
          //System.out.println("financial aid: " + financialAid);
          //System.out.println("tuition: " + tuition);
          //System.out.println("enrollment size: " + enrollmentSize.keySet());

@@ -15,6 +15,7 @@ public class UniversityDataParser {
 	private String baseURL;
 	private Document currentDoc;
 	Map<String, String> universityLinks;
+	Map<String, Document> universityDocs;
 	Map<String, String> universityRank;
 	Map<String, String> universityTuition;
 	Map<String, String> universitySubSchools;
@@ -35,9 +36,10 @@ public class UniversityDataParser {
 			System.out.println("Could not get universities :(");
 		}
 	}
-
-	// university - link
+	
+	// university - link and university - document
 	public void getUniversityLinks() {
+		System.out.println("Getting University Links");
 		this.universityLinks = new HashMap<String, String>();
 		Elements universities = this.currentDoc.select("a");
 		for (Element uni : universities) {
@@ -47,19 +49,26 @@ public class UniversityDataParser {
 				universityLinks.put(UniversityName, href);
 			}
 		}
-	}
-
-	// university - rank
-	public Map<String, String> getCountryRank() {
-		this.universityRank = new HashMap<String, String>();
+		this.universityDocs = new HashMap<String, Document>();
 		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
 			String name = entry.getKey();
 			String link = entry.getValue();
 			try {
-				this.currentDoc = Jsoup.connect(link).get();
+				Document d = Jsoup.connect(link).get();
+				universityDocs.put(name, d);
 			} catch (IOException e) {
 				System.out.println("Could not get the university :");
 			}
+		}
+	}
+
+	// university - rank
+	public Map<String, String> getCountryRank() {
+		System.out.println("Getting University Rank");
+		this.universityRank = new HashMap<String, String>();
+		for (Map.Entry<String, Document> entry : universityDocs.entrySet()) {
+			String name = entry.getKey();
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("td").text();
 			String splitInfo[] = info.split(" ");
 			universityRank.put(name, splitInfo[2]);
@@ -69,15 +78,11 @@ public class UniversityDataParser {
 
 	// university - schools in university
 	public Map<String, String> getSchoolsInUniversity() {
+		System.out.println("Getting Schools In University");
 		this.universitySubSchools = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[style=margin:auto]").text();
 			int index = info.indexOf("|");
 			info = info.substring(index + 1);
@@ -88,15 +93,11 @@ public class UniversityDataParser {
 
 	// university - financial aid
 	public Map<String, String> getFinancialAid() {
+		System.out.println("Getting Financial Aid");
 		this.universityFinancialAid = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -116,16 +117,11 @@ public class UniversityDataParser {
 
 	// university - admission rate
 	public Map<String, String> getAdmissionRate() {
+		System.out.println("Getting Admission Rate");
 		this.universityAddmissionRate = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			System.out.println(name);
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -146,15 +142,11 @@ public class UniversityDataParser {
 
 	// university - tuition
 	public Map<String, String> getTuition() {
+		System.out.println("Getting Tuition");
 		this.universityTuition = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("td").text();
 			String[] splitInfo = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -169,15 +161,11 @@ public class UniversityDataParser {
 
 	// state - university
 	public Map<String, ArrayList<String>> getAddress() {
+		System.out.println("Getting Location");
 		this.universityLocation = new HashMap<String, ArrayList<String>>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -218,15 +206,11 @@ public class UniversityDataParser {
 
 	// Academic Calendar(Semesters, Quarters, Trimesters, 4-1-4, Other) - university
 	public Map<String, ArrayList<String>> getAcademicSystem() {
+		System.out.println("Getting Academic System");
 		this.calendarUniversity = new HashMap<String, ArrayList<String>>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -251,15 +235,11 @@ public class UniversityDataParser {
 
 	// campus type (public/private) - university
 	public Map<String, ArrayList<String>> getPublicPrivate() {
+		System.out.println("Getting University Status");
 		this.publicPrivateUniversity = new HashMap<String, ArrayList<String>>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -293,15 +273,11 @@ public class UniversityDataParser {
 
 	// campus setting (rural/urban/suburban) - university
 	public Map<String, ArrayList<String>> getCampusSetting() {
+		System.out.println("Getting Campus Setting");
 		this.settingToUniversity = new HashMap<String, ArrayList<String>>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
+			this.currentDoc = entry.getValue();
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] infoSplit = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -346,16 +322,12 @@ public class UniversityDataParser {
 	// medium - 40,000 lower
 	// large 40,000 higher
 	public Map<String, ArrayList<String>> getEnrollmentSizes() {
+		System.out.println("Getting Enrollment Size");
 		this.sizeToUniversity = new HashMap<String, ArrayList<String>>();
-		for (Map.Entry<String, String> entry : this.universityLinks.entrySet()) {
+		for (Map.Entry<String, Document> entry : this.universityDocs.entrySet()) {
 			String name = entry.getKey();
-			String link = entry.getValue();
+			this.currentDoc = entry.getValue();
 			int index = 0;
-			try {
-				this.currentDoc = Jsoup.connect(link).get();
-			} catch (IOException e) {
-				System.out.println("Could not get the university :");
-			}
 			String info = this.currentDoc.select("table[class=table borderless]").text();
 			String[] splitInfo = info.split(" ");
 			ArrayList<String> arrayList = new ArrayList<String>();
@@ -379,7 +351,7 @@ public class UniversityDataParser {
 			str = str.replaceAll(",", "");
 			int enrollment = Integer.parseInt(str);
 			if (enrollment <= 20000) {
-				if (sizeToUniversity.containsKey("small")) {
+				if (sizeToUniversity.containsKey("Small")) {
 					sizeToUniversity.get("Small").add(name);
 				} else {
 					ArrayList<String> smallList = new ArrayList<String>();
@@ -387,7 +359,7 @@ public class UniversityDataParser {
 					sizeToUniversity.put("Small", smallList);
 				}
 			} else if (enrollment <= 40000) {
-				if (sizeToUniversity.containsKey("medium")) {
+				if (sizeToUniversity.containsKey("Medium")) {
 					sizeToUniversity.get("Medium").add(name);
 				} else {
 					ArrayList<String> medList = new ArrayList<String>();
@@ -395,7 +367,7 @@ public class UniversityDataParser {
 					sizeToUniversity.put("Medium", medList);
 				}
 			} else {
-				if (sizeToUniversity.containsKey("large")) {
+				if (sizeToUniversity.containsKey("Large")) {
 					sizeToUniversity.get("Large").add(name);
 				} else {
 					ArrayList<String> largeList = new ArrayList<String>();
@@ -406,140 +378,109 @@ public class UniversityDataParser {
 		}
 		return sizeToUniversity;
 	}
+	
+	//finds which map is associated with preference - for recommendations
+	private Map<String, ArrayList<String>> findVal (String cat) {
+		if (cat.equals("Size")) {
+			return sizeToUniversity; 
+		} else if (cat.equals("Campus Setting")) {
+			return settingToUniversity; 
+		} else if (cat.equals("Public/Private")) {
+			return publicPrivateUniversity; 
+		} else if (cat.equals("Academic Calendar")) {
+			return calendarUniversity; 
+		} else {
+			return universityLocation;
+		}
+	}
 
+	//finds which specific is associated with preference - for recommendations
+	private String findSpec (String cat, String eSize, String cSetting, String publicPrivate,
+			String aCal, String location) {
+		if (cat.equals("Size")) {
+			return eSize; 
+		} else if (cat.equals("Campus Setting")) {
+			return cSetting; 
+		} else if (cat.equals("Public/Private")) {
+			return publicPrivate; 
+		} else if (cat.equals("Academic Calendar")) {
+			return aCal; 
+		} else {
+			return location;
+		}
+	}
+	
+	// calculates recommendations based on various user input and weights the input based on 
+	// the ranking of preferences
 	public Map<String, ArrayList<String>> getRecommendations(String eSize, String cSetting, String publicPrivate,
-			String aCal, String location, String leastImportant) {
+			String aCal, String location, String P1, String P2, String P3, String P4, String P5) {
+		
 		Map<String, ArrayList<String>> finalRecommendations = new HashMap<String, ArrayList<String>>();
 
-		ArrayList<String> size = new ArrayList<String>();
-		ArrayList<String> setting = new ArrayList<String>();
-		ArrayList<String> pubPriv = new ArrayList<String>();
-		ArrayList<String> cal = new ArrayList<String>();
-		ArrayList<String> loc = new ArrayList<String>();
-
-		if (!eSize.equals("No Preference")) {
-			size = sizeToUniversity.get(eSize);
-		}
-
-		if (!cSetting.equals("No Preference")) {
-			setting = settingToUniversity.get(cSetting);
-		}
-
-		if (!publicPrivate.equals("No Preference")) {
-			pubPriv = publicPrivateUniversity.get(publicPrivate);
-		}
-
-		if (!aCal.equals("No Preference")) {
-			cal = calendarUniversity.get(aCal);
-		}
-
-		if (!location.equals("No Preference")) {
-			loc = universityLocation.get(location);
-		}
-		ArrayList<String> recommend = sizeToUniversity.get(eSize);
-
-		if (!setting.isEmpty()) {
-			recommend.retainAll(setting);
-		}
-
-		if (!pubPriv.isEmpty()) {
-			recommend.retainAll(pubPriv);
-		}
-
-		if (!cal.isEmpty()) {
-			recommend.retainAll(cal);
-		}
-
-		if (!loc.isEmpty()) {
-			recommend.retainAll(loc);
-		}
-
-		if (recommend.size() < 3) {
-
-			if (leastImportant.equals("Size")) {
-				recommend = sizeToUniversity.get(cSetting);
-				if (!pubPriv.isEmpty()) {
-					recommend.retainAll(pubPriv);
-				}
-
-				if (!cal.isEmpty()) {
-					recommend.retainAll(cal);
-				}
-
-				if (!loc.isEmpty()) {
-					recommend.retainAll(loc);
-				}
-
-			} else if (leastImportant.equals("Campus Setting")) {
-				recommend = sizeToUniversity.get(eSize);
-				if (!pubPriv.isEmpty()) {
-					recommend.retainAll(pubPriv);
-				}
-
-				if (!cal.isEmpty()) {
-					recommend.retainAll(cal);
-				}
-
-				if (!loc.isEmpty()) {
-					recommend.retainAll(loc);
-				}
-			} else if (leastImportant.equals("Public/Private")) {
-				recommend = sizeToUniversity.get(eSize);
-				if (!setting.isEmpty()) {
-					recommend.retainAll(setting);
-				}
-
-				if (!cal.isEmpty()) {
-					recommend.retainAll(cal);
-				}
-
-				if (!loc.isEmpty()) {
-					recommend.retainAll(loc);
-				}
-			} else if (leastImportant.equals("Academic Calendar")) {
-				recommend = sizeToUniversity.get(eSize);
-				if (!setting.isEmpty()) {
-					recommend.retainAll(setting);
-				}
-
-				if (!pubPriv.isEmpty()) {
-					recommend.retainAll(pubPriv);
-				}
-
-				if (!loc.isEmpty()) {
-					recommend.retainAll(loc);
-				}
-			} else if (leastImportant.equals("Location")) {
-
-				recommend = sizeToUniversity.get(eSize);
-				if (!setting.isEmpty()) {
-					recommend.retainAll(setting);
-				}
-
-				if (!pubPriv.isEmpty()) {
-					recommend.retainAll(pubPriv);
-				}
-
-				if (!cal.isEmpty()) {
-					recommend.retainAll(cal);
+		ArrayList<String> pref1 = findVal(P1).get(findSpec(P1, eSize, cSetting, publicPrivate, aCal, location));
+		ArrayList<String> pref2 = findVal(P2).get(findSpec(P2, eSize, cSetting, publicPrivate, aCal, location));
+		ArrayList<String> pref3 = findVal(P3).get(findSpec(P3, eSize, cSetting, publicPrivate, aCal, location));
+		ArrayList<String> pref4 = findVal(P4).get(findSpec(P4, eSize, cSetting, publicPrivate, aCal, location));
+		ArrayList<String> pref5 = findVal(P5).get(findSpec(P5, eSize, cSetting, publicPrivate, aCal, location));
+		
+		ArrayList<String> recommend = new ArrayList<String>(); 
+		System.out.println("recommend1 " + recommend);
+		pref1.retainAll(pref2);
+		if (!pref1.isEmpty()) {
+			recommend.addAll(pref1);
+			System.out.println("recommend 2" + recommend);
+			pref1.retainAll(pref3); 
+			if (!pref1.isEmpty()) {
+				recommend.addAll(pref1);
+				System.out.println("recommend3 " + recommend);
+				pref1.retainAll(pref4); 
+				System.out.println("pref1 1" + pref1);
+				if (!pref1.isEmpty()) {
+					recommend.addAll(pref1);
+					System.out.println("recommend4 " + recommend);
+					pref1.retainAll(pref5);
+					System.out.println("pref1 2" + pref1);
+					if (!pref1.isEmpty()) {
+						recommend.addAll(pref1);
+						System.out.println("recommend5 " + recommend);
+					} 
 				}
 			}
 		}
-		for (int i = 0; i <= 3; i++) {
-			String rank = universityRank.get(recommend.get(i));
-			String tuition = universityTuition.get(recommend.get(i));
-			String financialAid = universityFinancialAid.get(recommend.get(i));
-			String admissionRate = universityAddmissionRate.get(recommend.get(i));
+		System.out.println("recommend6 " + recommend);
+		
+		if (recommend.size() < 3) {
+			for (String s : recommend) {
+				String rank = universityRank.get(s);
+				String tuition = universityTuition.get(s);
+				String financialAid = universityFinancialAid.get(s);
+				String admissionRate = universityAddmissionRate.get(s);
+				
+				ArrayList<String> facts = new ArrayList<String>();
+				facts.add("School Rank: " + rank);
+				facts.add("School Tuition: " + tuition);
+				facts.add("Financial Aid Offering: " + financialAid);
+				facts.add("Admission Rate: " + admissionRate);
+				
+				finalRecommendations.put("University: " + s, facts);
+			}
+		} else {
+			for (int i = 0; i < 3; i++) {
+				String rank = universityRank.get(recommend.get(i));
+				String tuition = universityTuition.get(recommend.get(i));
+				String financialAid = universityFinancialAid.get(recommend.get(i));
+				String admissionRate = universityAddmissionRate.get(recommend.get(i));
 
-			ArrayList<String> facts = new ArrayList<String>();
-			facts.add(rank);
-			facts.add(tuition);
-			facts.add(financialAid);
-			facts.add(admissionRate);
+				ArrayList<String> facts = new ArrayList<String>();
+				facts.add("School Rank: " + rank);
+				facts.add("School Tuition: " + tuition);
+				facts.add("Financial Aid Offering: " + financialAid);
+				facts.add("Admission Rate: " + admissionRate);
 
-			finalRecommendations.put(recommend.get(i), facts);
+				finalRecommendations.put("University: " + recommend.get(i), facts);
+			}
 		}
-
+		
 		return finalRecommendations;
 	}
 
@@ -547,7 +488,7 @@ public class UniversityDataParser {
 	    return universityLocation.get(state);
 	}
 
-	public ArrayList<String> questionTwo(String tuition){
+	public ArrayList<String> questionTwo(String tuition) {
 	    ArrayList<String> schools = new ArrayList<String>();
 	    for (String school : universityTuition.keySet()) {
 	        String range = universityTuition.get(school);
