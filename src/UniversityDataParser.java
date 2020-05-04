@@ -1,5 +1,7 @@
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +83,7 @@ public class UniversityDataParser {
 			info = info.substring(index + 1);
 			universitySubSchools.put(name, info);
 		}
-		return universityRank;
+		return universitySubSchools;
 	}
 
 	// university - financial aid
@@ -452,7 +454,7 @@ public class UniversityDataParser {
 			recommend.retainAll(loc);
 		}
 
-		if (recommend.size() <= 3) {
+		if (recommend.size() < 3) {
 
 			if (leastImportant.equals("Size")) {
 				recommend = sizeToUniversity.get(cSetting);
@@ -539,5 +541,104 @@ public class UniversityDataParser {
 		}
 
 		return finalRecommendations;
+	}
+
+	public ArrayList<String> questionOne(String state) {
+	    return universityLocation.get(state);
+	}
+
+	public ArrayList<String> questionTwo(String tuition){
+	    ArrayList<String> schools = new ArrayList<String>();
+	    for (String school : universityTuition.keySet()) {
+	        String range = universityTuition.get(school);
+	        int index = range.indexOf('-');
+	        String beg = range.substring(0, index);
+	        String end = range.substring(index+1);
+	        try {
+                if (NumberFormat.getNumberInstance(java.util.Locale.US).parse(tuition).intValue()
+                        >= NumberFormat.getNumberInstance(java.util.Locale.US).parse(beg).intValue() &&
+                        NumberFormat.getNumberInstance(java.util.Locale.US).parse(tuition).intValue()
+                        <= NumberFormat.getNumberInstance(java.util.Locale.US).parse(end).intValue()) {
+                    schools.add(school);
+                }
+            } catch (ParseException e) {
+                continue;
+            }
+	    }
+
+	    return schools;
+	}
+
+	public ArrayList<String> questionThree(int admissionRate){
+	    ArrayList<String> schools = new ArrayList<String>();
+	    for (String school : universityAddmissionRate.keySet()) {
+	        String range = universityAddmissionRate.get(school);
+	        range = range.substring(0, range.length()-1);
+	        int index = range.indexOf('-');
+	        int beg = Integer.parseInt(range.substring(0, index));
+	        int end = Integer.parseInt(range.substring(index+1));
+	        if (admissionRate >= beg && admissionRate <= end) {
+	            schools.add(school);
+	        }
+	    }
+
+	    return schools;
+	}
+
+	public ArrayList<String> questionFour(String regionType){
+	    return settingToUniversity.get(regionType);
+	}
+
+	public HashMap<Integer, Double> questionSix(){
+	    HashMap<Integer, ArrayList<Double>> ranksToTuitions = new HashMap<Integer, ArrayList<Double>>();
+	    HashMap<Integer, Double> avgTuitionPerRank = new HashMap<Integer, Double>();
+
+	    for (String school : universityTuition.keySet()) {
+	        String tuitionString = universityTuition.get(school);
+	        int index = tuitionString.indexOf('-');
+            String beg = tuitionString.substring(0, index);
+            String end = tuitionString.substring(index+1);
+            try {
+                int beginning = NumberFormat.getNumberInstance(java.util.Locale.US).parse(beg).intValue();
+                int ending = NumberFormat.getNumberInstance(java.util.Locale.US).parse(end).intValue();
+                double avgTuition = (beginning+ending)/2;
+                int rankOfSchool = Integer.parseInt(universityRank.get(school));
+                if (ranksToTuitions.containsKey(rankOfSchool)) {
+                    ranksToTuitions.get(rankOfSchool).add(avgTuition);
+                } else {
+                    ranksToTuitions.put(rankOfSchool, new ArrayList<Double>());
+                    ranksToTuitions.get(rankOfSchool).add(avgTuition);
+                }
+            } catch (ParseException e) {
+                continue;
+            }
+	    }
+
+	    for (Integer rank : ranksToTuitions.keySet()) {
+	        ArrayList<Double> tuitions = ranksToTuitions.get(rank);
+	        double sum = 0;
+	        for (Double tuition : tuitions) {
+	            sum += tuition;
+	        }
+	        avgTuitionPerRank.put(rank, sum/tuitions.size());
+	    }
+
+	    return avgTuitionPerRank;
+	}
+
+	public HashMap<String, Integer> questionSeven(){
+	    HashMap<String, Integer> statesAndCounts = new HashMap<String, Integer>();
+	    for (String state : universityLocation.keySet()) {
+	        statesAndCounts.put(state, universityLocation.get(state).size());
+	    }
+	    return statesAndCounts;
+	}
+
+	public HashMap<String, Integer> questionEight(){
+	    HashMap<String, Integer> statesAndCounts = new HashMap<String, Integer>();
+	    for (String state : settingToUniversity.keySet()) {
+	        statesAndCounts.put(state, settingToUniversity.get(state).size());
+	    }
+	    return statesAndCounts;
 	}
 }

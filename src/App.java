@@ -22,23 +22,23 @@ public class App implements Runnable {
 	    JButton graph = new JButton("Graphs based on questions");
 	    panel.add(recommendation);
 	    panel.add(graph);
-	    
+
 	    JPanel subPanel = new JPanel();
-    	
+
     	panel.add(subPanel, BorderLayout.SOUTH);
-	    
+
 	    recommendation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
             	subPanel.removeAll();
-            	
+
             	String [] enrollmentSize = {"Small", "Medium", "Large"};
             	String [] campusSetting = {"Rural", "Urban", "Suburban"};
             	String [] publicPrivate = {"Public", "Private"};
             	//String [] campusLocation = {"Public", "Private"};
             	String [] academicCalendar = {"Semesters", "Trimesters", "Quarters", "4-1-4", "Other"};
             	String [] leastImportant = {"Size", "Campus Setting", "Public/Private", "Academic Calendar", "Location"};
-            	
+
             	final JComboBox<String> es = new JComboBox<String>(enrollmentSize);
             	final JComboBox<String> cs = new JComboBox<String>(campusSetting);
             	final JComboBox<String> pp = new JComboBox<String>(publicPrivate);
@@ -46,7 +46,7 @@ public class App implements Runnable {
             	final JTextField loc = new JTextField(20);
             	final JComboBox<String> li = new JComboBox<String>(leastImportant);
             	final JButton ok = new JButton("OK");
-            	
+
         	    subPanel.add(es);
         	    subPanel.add(cs);
         	    subPanel.add(pp);
@@ -54,7 +54,7 @@ public class App implements Runnable {
         	    subPanel.add(li);
         	    subPanel.add(loc);
         	    subPanel.add(ok);
-        	    
+
         	    ok.addActionListener(new ActionListener() {
         	    	public void actionPerformed(ActionEvent f) {
         	    		System.out.println("es: " + es.getSelectedItem());
@@ -64,42 +64,42 @@ public class App implements Runnable {
         	    		System.out.println("loc: " + loc.getText());
         	    	}
         	    });
-        	   
+
             }
         });
-	    
+
 	    graph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
             	subPanel.removeAll();
-            	
+
             	String [] choices = {"sigh"};
             	String [] campusSetting = {"hello"};
-            	
+
             	final JComboBox<String> es = new JComboBox<String>(choices);
             	final JComboBox<String> cs = new JComboBox<String>(campusSetting);
             	final JButton ok = new JButton("OK");
-            	
-            	
+
+
             	subPanel.add(es);
             	subPanel.add(cs);
             	subPanel.add(ok);
-        	    
+
         	    ok.addActionListener(new ActionListener() {
         	    	public void actionPerformed(ActionEvent f) {
         	    		System.out.println("es: " + es.getSelectedItem());
         	    		System.out.println("cs: " + cs.getSelectedItem());
         	    	}
         	    });
-        	   
+
             }
         });
-	    
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 		}
-	
+
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new App());
     }
