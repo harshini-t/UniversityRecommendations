@@ -23,3 +23,5 @@ Divya: The algorithm for Question 7 (What is the relationship between region and
 Durga and Divya: In addition to the algorithms there is a basic GUI (App.java) that allows the user to interact and ask specific questions (see screenshots and instruction manual for details). Durga worked on setting up the GUI and displaying the recommendations and Divya worked on displaying the graphs and statistics. 
 
 While each section is associated with a specific person, there was collaboration throughout the process if any person needed help completing their individual part. 
+
+Note: the code for creating line graphs and bar graphs using Java Swing was adopted from other users' code found on Github, since none of us knew how to create graphs before. Also, we were not able to find how to add axis labels to our bar graphs, so instead we outputted onto the console what would be the x axis label and y axis label (state/region and count) in left to right order of the bars. 
