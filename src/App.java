@@ -368,7 +368,6 @@ public class App implements Runnable {
                                 System.out.println(state + ": " + stateToCount.get(state) + " universities");
                             }
                             frame.getContentPane().add(chart);
-                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             frame.pack();
                             frame.setVisible(true);
 
@@ -384,7 +383,6 @@ public class App implements Runnable {
                             chart.addBar(Color.blue, settingToCount.get("Urban"));
                             System.out.println("Urban: " + settingToCount.get("Urban") + " universities");
                             frame.getContentPane().add(chart);
-                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             frame.pack();
                             frame.setVisible(true);
                         }
