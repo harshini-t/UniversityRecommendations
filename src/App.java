@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class App implements Runnable {
     public void run() {
-        JFrame frame = new JFrame("University Recommendations");
+        JFrame frame = new JFrame("University Recommendations and Statistics");
         JPanel panel = new JPanel();
         UniversityDataParser parser = new UniversityDataParser();
         parser.getUniversityLinks();
@@ -59,7 +59,7 @@ public class App implements Runnable {
 
         recommendation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFrame subFrame = new JFrame("College Recommendations");
+                JFrame subFrame = new JFrame("University Recommendations");
 
                 JPanel subPanel = new JPanel();
                 subFrame.add(subPanel);
@@ -76,8 +76,8 @@ public class App implements Runnable {
                 String[] rank4 = { "Size", "Campus Setting", "Public/Private", "Academic Calendar", "Location" };
                 String[] rank5 = { "Size", "Campus Setting", "Public/Private", "Academic Calendar", "Location" };
 
-                String instructions = "Enter your preferences and select \n"
-                        + "which preferences are the most important to you to get a top 3 \n"
+                String instructions = "Enter your preferences and select "
+                        + "which preferences \n are the most important to you. \n Get a top 3"
                         + "list of schools that match your criteria!";
 
                 JOptionPane.showConfirmDialog(frame, instructions, "Instructions: ", JOptionPane.PLAIN_MESSAGE);
