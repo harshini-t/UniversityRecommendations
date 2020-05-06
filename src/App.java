@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class App implements Runnable {
     public void run() {
-        JFrame frame = new JFrame("College Recommendations and Statistics!");
+        JFrame frame = new JFrame("University Recommendations");
         JPanel panel = new JPanel();
         UniversityDataParser parser = new UniversityDataParser();
         parser.getUniversityLinks();
